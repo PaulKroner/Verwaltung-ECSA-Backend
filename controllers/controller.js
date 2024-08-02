@@ -4,7 +4,7 @@
  * The controller functions are responsible for handling the request and response.
  * The controller functions call the database functions from queries.js to interact with the database.
  */
-const pool = require('../db');
+// const pool = require('../db');
 const queries = require('../queries/queries');
 const { getDatafromDatabase, getExampleData, insertExampleData } = require('../queries/queries');
 
@@ -31,6 +31,7 @@ const createExample = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
 
 module.exports = {
     getDatafromDB,

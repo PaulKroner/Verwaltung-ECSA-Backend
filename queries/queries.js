@@ -3,7 +3,7 @@
  * The queries are exported and used in the controller functions.
  */
 const pool = require('../db');
-const tableName = 'pgtest';
+const tableName = 'employees';
 
 // get * query for the overview-table
 const getDatafromDatabase = async () => {
