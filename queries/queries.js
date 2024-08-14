@@ -3,18 +3,16 @@
  * The queries are exported and used in the controller functions.
  */
 const pool = require('../db');
-const tableName = 'employees';
+const tableName = 'employees_new';
 
 // get * query for the overview-table
 const getDatafromDatabase = async () => {
     try {
         const result = await pool.query(`SELECT * FROM ${tableName} ORDER BY id;`);
-        console.log("Select wird ausgeführt")
         return result.rows;
     } catch (err) {
-        console.log("Select wird nicht ausgeführt")
         throw new Error('Error fetching data from database');
-        
+
     }
 };
 

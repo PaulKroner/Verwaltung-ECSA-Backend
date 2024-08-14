@@ -8,6 +8,7 @@ const controller = require('./controllers/controller');
 app.use(cors());
 app.use(express.json());
 
+// get everything from database
 app.get('/api/getdata', controller.getDatafromDB);
 
 // create a new employee
