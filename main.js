@@ -9,7 +9,10 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/api/getdata', controller.getDatafromDB);
-// app.post('/api/example2', controller.createExample);
+
+// create a new employee
+app.post('/api/create', controller.createEmployee);
+
 
 app.get("/", (req, res) => {
     res.json({ message: "main.js page" });

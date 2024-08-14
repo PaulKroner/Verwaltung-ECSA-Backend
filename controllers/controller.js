@@ -20,6 +20,28 @@ const getDatafromDB = async (req, res) => {
     }
 };
 
+// create a new employee
+const createEmployee = async (req, res) => {
+    try {
+        const data = req.body;
+        const result = await insertNewEmployee(data);
+        res.status(201).json("Mitarbeiter wurde hinzugefügt");
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// delete an employee
+const deleteEmployeeFromDB = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const result = await deleteEmployee(id);
+        res.status(200).json("Mitarbeiter wurde gelöscht");
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 
 // insert data into the database
 const createExample = async (req, res) => {
@@ -35,5 +57,5 @@ const createExample = async (req, res) => {
 
 module.exports = {
     getDatafromDB,
-    createExample,
+    createEmployee,
 };
