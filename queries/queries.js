@@ -17,7 +17,7 @@ const getDatafromDatabase = async () => {
 };
 
 // insert new employee
-const insertNewEmployee = async (data) => {
+const insertNewEmployeeQuery = async (data) => {
     try {
         const query = `
             INSERT INTO ${tableName} 
@@ -48,7 +48,7 @@ const insertNewEmployee = async (data) => {
 };
 
 // delete an employee
-const deleteEmployee = async (id) => {
+const deleteEmployeeQuery = async (id) => {
     try {
         const query = `DELETE FROM ${tableName} WHERE id = $1 RETURNING *`;
         const result = await pool.query(query, [id]);
@@ -59,7 +59,8 @@ const deleteEmployee = async (id) => {
 }
 
 module.exports = {
-    getDatafromDatabase,
-    insertNewEmployee,
-    deleteEmployee,
+    getDatafromDBQuery,
+    insertNewEmployeeQuery,
+    updateEmployeeQuery,
+    deleteEmployeeQuery,
 };

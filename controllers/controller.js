@@ -6,13 +6,13 @@
  */
 // const pool = require('../db');
 const queries = require('../queries/queries');
-const { getDatafromDatabase, insertNewEmployee, deleteEmployee} = require('../queries/queries');
+const { getDatafromDBQuery, insertNewEmployeeQuery, updateEmployeeQuery, deleteEmployeeQuery} = require('../queries/queries');
 
 
 // get * from database
 const getDatafromDB = async (req, res) => {
     try {
-        const result = await getDatafromDatabase();
+        const result = await getDatafromDBQuery();
         console.log(result);
         res.status(200).json(result);
     } catch (error) {
@@ -24,7 +24,7 @@ const getDatafromDB = async (req, res) => {
 const createEmployee = async (req, res) => {
     try {
         const data = req.body;
-        const result = await insertNewEmployee(data);
+        const result = await insertNewEmployeeQuery(data);
         res.status(201).json("Mitarbeiter wurde hinzugefügt");
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -32,10 +32,10 @@ const createEmployee = async (req, res) => {
 };
 
 // delete an employee
-const deleteEmployeeFromDB = async (req, res) => {
+const deleteEmployee = async (req, res) => {
     try {
         const id = req.params.id;
-        const result = await deleteEmployee(id);
+        const result = await deleteEmployeeQuery(id);
         res.status(200).json("Mitarbeiter wurde gelöscht");
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -58,5 +58,5 @@ const createExample = async (req, res) => {
 module.exports = {
     getDatafromDB,
     createEmployee,
-    deleteEmployeeFromDB,
+    deleteEmployee,
 };
