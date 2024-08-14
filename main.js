@@ -13,6 +13,8 @@ app.get('/api/getdata', controller.getDatafromDB);
 // create a new employee
 app.post('/api/create', controller.createEmployee);
 
+// delete an employee
+app.delete('/api/delete/:id', controller.deleteEmployeeFromDB);
 
 app.get("/", (req, res) => {
     res.json({ message: "main.js page" });

@@ -49,7 +49,19 @@ const insertNewEmployee = async (data) => {
     }
 };
 
+// delete an employee
+const deleteEmployee = async (id) => {
+    try {
+        const query = `DELETE FROM ${tableName} WHERE id = $1 RETURNING *`;
+        const result = await pool.query(query, [id]);
+        return result.rows[0];
+    } catch (err) {
+        throw new Error('Error deleting data');
+    }
+}
+
 module.exports = {
     getDatafromDatabase,
-    insertExampleData,
+    insertNewEmployee,
+    deleteEmployee,
 };

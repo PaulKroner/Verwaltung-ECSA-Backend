@@ -6,7 +6,7 @@
  */
 // const pool = require('../db');
 const queries = require('../queries/queries');
-const { getDatafromDatabase, getExampleData, insertExampleData } = require('../queries/queries');
+const { getDatafromDatabase, insertNewEmployee, deleteEmployee} = require('../queries/queries');
 
 
 // get * from database
@@ -58,4 +58,5 @@ const createExample = async (req, res) => {
 module.exports = {
     getDatafromDB,
     createEmployee,
+    deleteEmployeeFromDB,
 };
