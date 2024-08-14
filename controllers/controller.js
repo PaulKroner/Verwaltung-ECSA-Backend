@@ -31,6 +31,17 @@ const createEmployee = async (req, res) => {
     }
 };
 
+// update an employee
+const updateEmployee = async (req, res) => {
+    try {
+        const data = req.body;
+        const result = await updateEmployeeQuery(data);
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
 // delete an employee
 const deleteEmployee = async (req, res) => {
     try {
@@ -58,5 +69,6 @@ const createExample = async (req, res) => {
 module.exports = {
     getDatafromDB,
     createEmployee,
+    updateEmployee,
     deleteEmployee,
 };
