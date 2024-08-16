@@ -34,8 +34,7 @@ const createEmployee = async (req, res) => {
 // update an employee
 const updateEmployee = async (req, res) => {
     try {
-        const data = req.body;
-        const result = await updateEmployeeQuery(data);
+        const result = await updateEmployeeQuery(req.body);
         res.status(200).json(result);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -48,18 +47,6 @@ const deleteEmployee = async (req, res) => {
         const id = req.params.id;
         const result = await deleteEmployeeQuery(id);
         res.status(200).json("Mitarbeiter wurde gelöscht");
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-
-
-// insert data into the database
-const createExample = async (req, res) => {
-    try {
-        const data = req.body;
-        const result = await insertExampleData(data);
-        res.status(201).json(result);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

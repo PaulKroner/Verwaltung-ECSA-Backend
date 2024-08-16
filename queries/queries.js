@@ -57,9 +57,9 @@ const updateEmployeeQuery = async (data) => {
             RETURNING *`;
         const result = await pool.query(query, [
             data.id,
-            data.name,
-            data.vorname,
-            data.email,
+            data.name || null,
+            data.vorname || null,
+            data.email || null,
             data.postadresse || null,
             data.fz_eingetragen || null,
             data.fz_abgelaufen || null,

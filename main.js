@@ -14,6 +14,9 @@ app.get('/api/getdata', controller.getDatafromDB);
 // create a new employee
 app.post('/api/create', controller.createEmployee);
 
+// update an employee
+app.put('/api/update/:id', controller.updateEmployee);
+
 // delete an employee
 app.delete('/api/delete/:id', controller.deleteEmployee);
 
