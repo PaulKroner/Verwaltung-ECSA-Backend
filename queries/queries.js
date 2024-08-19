@@ -18,33 +18,31 @@ const getDatafromDBQuery = async () => {
 
 // insert new employee
 const insertNewEmployeeQuery = async (data) => {
-    try {
-        const query = `
-            INSERT INTO ${tableName} 
-            (name, vorname, email, postadresse, fz_eingetragen, fz_abgelaufen, fz_kontrolliert, gs_eingetragen, gs_abgelaufen, gs_kontrolliert, us_eingetragen, us_abgelaufen, us_kontrolliert, sve_eingetragen, sve_kontrolliert) 
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) 
-            RETURNING *`;
-        const result = await pool.query(query, [
-            data.name,
-            data.vorname,
-            data.email,
-            data.postadresse || null,
-            data.fz_eingetragen || null,
-            data.fz_abgelaufen || null,
-            data.fz_kontrolliert || null,
-            data.gs_eingetragen || null,
-            data.gs_abgelaufen || null,
-            data.gs_kontrolliert || null,
-            data.us_eingetragen || null,
-            data.us_abgelaufen || null,
-            data.us_kontrolliert || null,
-            data.sve_eingetragen || null,
-            data.sve_kontrolliert || null,
-        ]);
-        return result.rows[0];
-    } catch (err) {
-        throw new Error('Error inserting data into the database');
-    }
+  try {
+      // Extract keys and values from the data object
+      const keys = Object.keys(data);
+      const values = Object.values(data);
+
+      // Build the columns part of the query
+      const columns = keys.join(', ');
+
+      // Create placeholders for values in the SQL query
+      const placeholders = keys.map((_, index) => `$${index + 1}`).join(', ');
+
+      // Construct the SQL query
+      const query = `
+          INSERT INTO ${tableName} (${columns})
+          VALUES (${placeholders})
+          RETURNING *;
+      `;
+
+      // Execute the query
+      const result = await pool.query(query, values);
+      
+      return result.rows[0];
+  } catch (err) {
+      throw new Error('Error inserting data into the database');
+  }
 };
 
 // update an employee
