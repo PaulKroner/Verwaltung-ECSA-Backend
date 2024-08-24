@@ -8,7 +8,7 @@ const tableName = 'employees_new';
 // get * query for the overview-table
 const getDatafromDBQuery = async () => {
     try {
-        const result = await pool.query(`SELECT * FROM ${tableName} ORDER BY id;`);
+        const result = await pool.query(`SELECT * FROM ${tableName} ORDER BY name;`);
         return result.rows;
     } catch (err) {
         throw new Error('Error fetching data from database');
