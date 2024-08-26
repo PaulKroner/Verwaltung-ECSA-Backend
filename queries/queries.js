@@ -12,7 +12,7 @@ const getDatafromDBQuery = async () => {
     const result = await pool.query(`SELECT * FROM ${tableName} ORDER BY name;`);
     return result.rows;
   } catch (err) {
-    throw new Error(`Error fetching data from database: ${err.message}`);
+    throw new Error(`Fehler beim Abfragen der Datenbank: ${err.message}`);
   }
 };
 
@@ -43,7 +43,7 @@ const insertNewEmployeeQuery = async (data) => {
 
     return result.rows[0];
   } catch (err) {
-    throw new Error(`Error inserting data into the database: ${err.message}`);
+    throw new Error(`Fehler beim Hinzufügen eines neuen Mitarbeiters: ${err.message}`);
   }
 };
 
@@ -76,7 +76,7 @@ const updateEmployeeQuery = async (data) => {
     ]);
     return result.rows[0];
   } catch (err) {
-    throw new Error(`Error updating data: ${err.message}`);
+    throw new Error(`Fehler beim Updaten eines Mitarbeiters: ${err.message}`);
   }
 };
 
@@ -87,7 +87,7 @@ const deleteEmployeeQuery = async (id) => {
     const result = await pool.query(query, [id]);
     return result.rows[0];
   } catch (err) {
-    throw new Error(`Error deleting data: ${err.message}`);
+    throw new Error(`Fehler beim Löschen eines Mitarbeiters: ${err.message}`);
   }
 }
 
