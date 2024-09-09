@@ -4,7 +4,7 @@
  * The controller functions are responsible for handling the request and response.
  * The controller functions call the database functions from queries.js to interact with the database.
  */
-// const pool = require('../db');
+
 const queries = require('../queries/queries');
 const { getDatafromDBQuery, insertNewEmployeeQuery, updateEmployeeQuery, deleteEmployeeQuery} = require('../queries/queries');
 
