@@ -4,6 +4,9 @@ const db = require('./db');
 const app = express();
 const port = 8080;
 const controller = require('./controllers/controller');
+const { authorize } = require('./controllers/authorization-controller');
+const authorization = require('./authorization');
+
 
 app.use(cors());
 app.use(express.json());
@@ -22,6 +25,19 @@ app.delete('/api/delete/:id', controller.deleteEmployee);
 
 app.get("/", (req, res) => {
     res.json({ message: "main.js page" });
+});
+
+//authorization
+
+app.post('/register', authorization.register);
+app.post('/login', authorization.login);
+
+app.get('/admin', authorize(['Admin']), (req, res) => {
+  res.send('Willkommen Admin');
+});
+
+app.get('/user', authorize(['User', 'Admin']), (req, res) => {
+  res.send('Willkommen User');
 });
 
 // express seems like to have a problem with the lines below
