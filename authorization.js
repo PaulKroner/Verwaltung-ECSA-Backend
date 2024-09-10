@@ -7,6 +7,8 @@ const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
 const pool = require('./db'); // PostgreSQL connection pool
 
+const jwt = require('jsonwebtoken'); //web token
+
 
 // Benutzer-Registrierung
 const register = async (req, res) => {
@@ -46,15 +48,23 @@ const login = async (req, res) => {
     const isMatch = password === user.password;
     if (!isMatch) return res.status(400).json({ message: 'Passwort falsch' });
 
+    // Generating a JWT token
+    const token = jwt.sign(
+      { id: user.id, role_id: user.role_id }, // Payload, which can include user info like id and role
+      process.env.JWT_SECRET,           // Secret key from environment variables
+      { expiresIn: '1h' }               // Token expiration time
+    );
+
     // Erfolgreicher Login - Sende Token zurück
     res.json({
       message: 'Login erfolgreich',
+      token,  // Send the generated token to the client
     });
   } catch (error) {
     console.error("Login error:", error); // Log the error details
     res.status(500).json({ message: 'Fehler beim Login', error: error.message }); // Return the error message
   }
-  
+
 };
 
 
