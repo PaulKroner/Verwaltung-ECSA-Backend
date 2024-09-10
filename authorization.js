@@ -17,10 +17,10 @@ const register = async (req, res) => {
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
   try {
-    // Passwort hashen
+    // hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Benutzer speichern
+    // save user to database
     await pool.query(
       "INSERT INTO users (username, email, password, role_id) VALUES ($1, $2, $3, (SELECT id FROM roles WHERE name = $4))",
       [username, email, hashedPassword, role]
@@ -61,8 +61,8 @@ const login = async (req, res) => {
       token,  // Send the generated token to the client
     });
   } catch (error) {
-    console.error("Login error:", error); // Log the error details
-    res.status(500).json({ message: 'Fehler beim Login', error: error.message }); // Return the error message
+    console.error("Login error:", error);
+    res.status(500).json({ message: 'Fehler beim Login', error: error.message });
   }
 
 };

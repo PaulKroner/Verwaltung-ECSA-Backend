@@ -34,13 +34,13 @@ app.get("/", (req, res) => {
 app.post('/register', authorization.register);
 app.post('/login', authorization.login);
 
-app.get('/admin', authorize(['Admin']), (req, res) => {
-  res.send('Willkommen Admin');
-});
+// app.get('/admin', authorize(['Admin']), (req, res) => {
+//   res.send('Willkommen Admin');
+// });
 
-app.get('/user', authorize(['User', 'Admin']), (req, res) => {
-  res.send('Willkommen User');
-});
+// app.get('/user', authorize(['User', 'Admin']), (req, res) => {
+//   res.send('Willkommen User');
+// });
 
 // express seems like to have a problem with the lines below
 app.listen(port, () => {
