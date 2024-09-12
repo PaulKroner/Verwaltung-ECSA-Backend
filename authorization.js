@@ -12,22 +12,27 @@ const jwt = require('jsonwebtoken'); //web token
 
 // Benutzer-Registrierung
 const register = async (req, res) => {
-  const { username, email, password, role } = req.body;
+  const { email, password, role } = req.body;
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
   try {
     // hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     // save user to database
     await pool.query(
-      "INSERT INTO users (username, email, password, role_id) VALUES ($1, $2, $3, (SELECT id FROM roles WHERE name = $4))",
-      [username, email, hashedPassword, role]
+      "INSERT INTO users (email, password, role_id) VALUES ($1, $2, (SELECT id FROM roles WHERE name = $3))",
+      [email, hashedPassword, role]
     );
+
+    console.log("Database insert result:", result); // Add this to log the result of the query
+
 
     res.status(201).json({ message: 'Benutzer erfolgreich registriert' });
   } catch (error) {
+    console.error("Error during registration:", error); // Log the full error
     res.status(500).json({ message: 'Fehler beim Registrieren', error });
   }
 };
