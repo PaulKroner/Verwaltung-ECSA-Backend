@@ -41,12 +41,12 @@ const login = async (req, res) => {
     const userResult = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
     const user = userResult.rows[0];
 
-    if (!user) return res.status(400).json({ message: 'Benutzer nicht gefunden' });
+    if (!user) return res.status(400).json({ message: 'E-Mail oder Passwort falsch!' });
 
     // Passwortvergleich
     // const isMatch = await bcrypt.compare(password, user.password);
     const isMatch = password === user.password;
-    if (!isMatch) return res.status(400).json({ message: 'Passwort falsch' });
+    if (!isMatch) return res.status(400).json({ message: 'E-Mail oder Passwort falsch!' });
 
     // Generating a JWT token
     const token = jwt.sign(
