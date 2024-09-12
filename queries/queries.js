@@ -91,9 +91,19 @@ const deleteEmployeeQuery = async (id) => {
   }
 }
 
+const getDataRolesQuery = async () => {
+  try {
+    const result = await pool.query("SELECT id, email, name, vorname, role_id AS role FROM users");
+    return result.rows;
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
 module.exports = {
   getDatafromDBQuery,
   insertNewEmployeeQuery,
   updateEmployeeQuery,
   deleteEmployeeQuery,
+  getDataRolesQuery,
 };

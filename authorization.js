@@ -4,6 +4,7 @@
  */
 
 const bcrypt = require('bcryptjs');
+
 const { validationResult } = require('express-validator');
 const pool = require('./db'); // PostgreSQL connection pool
 
@@ -21,8 +22,13 @@ const register = async (req, res) => {
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    const emailExists = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
+    if (emailExists.rowCount > 0) {
+      return res.status(400).json({ message: 'E-Mail-Adresse bereits vorhanden' });
+    }
+
     // save user to database
-    await pool.query(
+    const result = await pool.query(
       "INSERT INTO users (email, password, role_id) VALUES ($1, $2, (SELECT id FROM roles WHERE name = $3))",
       [email, hashedPassword, role]
     );

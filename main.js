@@ -29,8 +29,10 @@ app.get("/", (req, res) => {
     res.json({ message: "main.js page" });
 });
 
-//authorization
+// get all users from users table
+app.get('/api/getDataRoles', controller.getDataRoles);
 
+//authorization
 app.post('/register', authorization.register);
 app.post('/login', authorization.login);
 
