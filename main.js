@@ -36,13 +36,8 @@ app.get('/api/getDataRoles', controller.getDataRoles);
 app.post('/register', authorization.register);
 app.post('/login', authorization.login);
 
-// app.get('/admin', authorize(['Admin']), (req, res) => {
-//   res.send('Willkommen Admin');
-// });
-
-// app.get('/user', authorize(['User', 'Admin']), (req, res) => {
-//   res.send('Willkommen User');
-// });
+// User routes
+app.delete('/api/deleteUser/:id', controller.deleteUser);
 
 // express seems like to have a problem with the lines below
 app.listen(port, () => {

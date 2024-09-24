@@ -6,7 +6,7 @@
  */
 
 const queries = require('../queries/queries');
-const { getDatafromDBQuery, insertNewEmployeeQuery, updateEmployeeQuery, deleteEmployeeQuery, getDataRolesQuery} = require('../queries/queries');
+const { getDatafromDBQuery, insertNewEmployeeQuery, updateEmployeeQuery, deleteEmployeeQuery, getDataRolesQuery, deleteUserQuery} = require('../queries/queries');
 
 
 // get * from database
@@ -60,6 +60,17 @@ const getDataRoles = async (req, res) => {
     }
 }
 
+// delete a user
+const deleteUser = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const result = await deleteUserQuery(id);
+        res.status(200).json("User wurde gelöscht");
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 
 module.exports = {
     getDatafromDB,
@@ -67,4 +78,5 @@ module.exports = {
     updateEmployee,
     deleteEmployee,
     getDataRoles,
+    deleteUser,
 };

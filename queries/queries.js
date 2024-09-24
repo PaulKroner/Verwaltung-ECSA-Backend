@@ -100,10 +100,22 @@ const getDataRolesQuery = async () => {
   }
 }
 
+// delete a user query
+const deleteUserQuery = async (id) => {
+  try {
+    const query = `DELETE FROM users WHERE id = $1 RETURNING *`;
+    const result = await pool.query(query, [id]);
+    return result.rows[0];
+  } catch (err) {
+    throw new Error(`Fehler beim Löschen eines Users: ${err.message}`);
+  }
+};
+
 module.exports = {
   getDatafromDBQuery,
   insertNewEmployeeQuery,
   updateEmployeeQuery,
   deleteEmployeeQuery,
   getDataRolesQuery,
+  deleteUserQuery,
 };
