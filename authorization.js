@@ -13,7 +13,7 @@ const jwt = require('jsonwebtoken'); //web token
 
 // Benutzer-Registrierung
 const register = async (req, res) => {
-  const { email, password, role } = req.body;
+  const { email, password, role, name, vorname } = req.body;
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
@@ -29,8 +29,8 @@ const register = async (req, res) => {
 
     // save user to database
     const result = await pool.query(
-      "INSERT INTO users (email, password, role_id) VALUES ($1, $2, (SELECT id FROM roles WHERE name = $3))",
-      [email, hashedPassword, role]
+      "INSERT INTO users (email, password, role_id, name, vorname) VALUES ($1, $2, (SELECT id FROM roles WHERE name = $3), $4, $5)",
+      [email, hashedPassword, role, name, vorname]
     );
 
     console.log("Database insert result:", result); // Add this to log the result of the query
