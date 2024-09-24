@@ -111,6 +111,33 @@ const deleteUserQuery = async (id) => {
   }
 };
 
+const updateUserQuery = async (data) => {
+  try {
+    const query = `
+            UPDATE users
+            SET email = $2, role_id = $3, name = $4, vorname = $5
+            WHERE id = $1
+            RETURNING *`;
+
+    console.log(data.id,
+      data.email || null,
+      data.role || null,
+      data.name || null,
+      data.vorname || null,)
+
+    const result = await pool.query(query, [
+      data.id,
+      data.email || null,
+      data.role || null,
+      data.name || null,
+      data.vorname || null,
+    ]);
+    return result.rows[0];
+  } catch (err) {
+    throw new Error(`Fehler beim Updaten eines Users: ${err.message}`);
+  }
+}
+
 module.exports = {
   getDatafromDBQuery,
   insertNewEmployeeQuery,
@@ -118,4 +145,5 @@ module.exports = {
   deleteEmployeeQuery,
   getDataRolesQuery,
   deleteUserQuery,
+  updateUserQuery
 };

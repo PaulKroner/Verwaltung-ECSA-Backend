@@ -38,6 +38,7 @@ app.post('/login', authorization.login);
 
 // User routes
 app.delete('/api/deleteUser/:id', controller.deleteUser);
+app.put('/api/updateUser/:id', controller.updateUser);
 
 // express seems like to have a problem with the lines below
 app.listen(port, () => {
