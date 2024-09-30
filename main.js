@@ -40,6 +40,9 @@ app.post('/login', authorization.login);
 app.delete('/api/deleteUser/:id', controller.deleteUser);
 app.put('/api/updateUser/:id', controller.updateUser);
 
+// password reset
+app.put('/api/resetPassword/:id', controller.resetPassword);
+
 // express seems like to have a problem with the lines below
 app.listen(port, () => {
     console.log(`Server läuft auf http://localhost:${port}`);
