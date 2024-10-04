@@ -4,12 +4,11 @@
  */
 
 const bcrypt = require('bcryptjs');
-
+require('dotenv').config(); // Load .env file
+const salt = process.env.BCRYPT_SALT;
 const { validationResult } = require('express-validator');
 const pool = require('./db'); // PostgreSQL connection pool
-
 const jwt = require('jsonwebtoken'); //web token
-
 
 // Benutzer-Registrierung
 const register = async (req, res) => {
@@ -19,8 +18,8 @@ const register = async (req, res) => {
 
   try {
     // hash password
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const hashedPassword = bcrypt.hashSync(password, salt);
 
     const emailExists = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
     if (emailExists.rowCount > 0) {
@@ -54,9 +53,8 @@ const login = async (req, res) => {
 
     if (!user) return res.status(400).json({ message: 'E-Mail oder Passwort falsch!' });
 
-    // Passwortvergleich
-    // const isMatch = await bcrypt.compare(password, user.password);
-    const isMatch = password === user.password;
+    // compare password
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: 'E-Mail oder Passwort falsch!' });
 
     // Generating a JWT token
