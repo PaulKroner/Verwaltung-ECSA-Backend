@@ -82,12 +82,14 @@ const updateUser = async (req, res) => {
 
 // reset password
 const resetPassword = async (req, res) => {
-    try {
-        const result = await resetPasswordQuery(req.body);
-        res.status(200).json(result);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+  const { token, newPassword } = req.body;
+  // Suche den User mit dem Token und überprüfe, ob der Token gültig ist
+  try {
+    const result = await resetPasswordQuery(token, newPassword);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 }
 
 module.exports = {

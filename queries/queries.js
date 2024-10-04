@@ -5,7 +5,6 @@
 const pool = require('../db');
 const tableName = 'employees_new';
 const { validateEmployeeData } = require('../utils/utils');
-const bcrypt = require('bcryptjs');
 
 // get * query for the overview-table
 const getDatafromDBQuery = async () => {
@@ -141,20 +140,21 @@ const updateUserQuery = async (data) => {
 
 // reset password query
 const resetPasswordQuery = async (data) => {
-  try {
-    // hash password
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(data.password, salt);
-    const query = `
-            UPDATE users
-            SET password = $2
-            WHERE email = $1`;
-    await pool.query(query, [data.email, hashedPassword]);
-    return { success: true }; // Optionally return a success message
-  } catch (err) {
-    console.log(err.message)
-    throw new Error(`Fehler beim Zurücksetzen des Passworts: ${err.message}`);
-  }
+  // try {
+  //   // hash password
+  //   const salt = await bcrypt.genSalt();
+  //   const hashedPassword = await bcrypt.hash(data.password, salt);
+  //   const query = `
+  //           UPDATE users
+  //           SET password = $2
+  //           WHERE email = $1`;
+  //   await pool.query(query, [data.email, hashedPassword]);
+  //   return { success: true }; // Optionally return a success message
+  // } catch (err) {
+  //   console.log(err.message)
+  //   throw new Error(`Fehler beim Zurücksetzen des Passworts: ${err.message}`);
+  // }
+
 }
 
 module.exports = {

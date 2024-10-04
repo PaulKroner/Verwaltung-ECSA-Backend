@@ -8,7 +8,8 @@ const port = 8080;
 const controller = require('./controllers/controller');
 const { authorize } = require('./controllers/authorization-controller');
 const authorization = require('./authorization');
-
+const resetPasswordController = require('./resetPasswordController')
+const sendPasswordResetEmail = require('./sendPasswordResetEmail');
 
 app.use(cors());
 app.use(express.json());
@@ -41,7 +42,8 @@ app.delete('/api/deleteUser/:id', controller.deleteUser);
 app.put('/api/updateUser/:id', controller.updateUser);
 
 // password reset
-app.put('/api/resetPassword/:id', controller.resetPassword);
+app.post('/api/resetPassword', resetPasswordController.resetPassword);
+app.post('/api/sendResetPasswordEmail', sendPasswordResetEmail.sendPasswordResetEmail);
 
 // express seems like to have a problem with the lines below
 app.listen(port, () => {
