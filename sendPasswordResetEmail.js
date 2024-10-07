@@ -1,3 +1,10 @@
+/**
+ * This file contains the functions to send a request to reset the password by sending an email
+ * with a reset link to the user.
+ * It generates a random token, sets an expiry date and saves the token and expiry date to the database.
+ * It sends an email with a reset link to the user.
+ */
+
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const pool = require('./db'); // Verbindung zur Datenbank
