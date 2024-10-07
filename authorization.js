@@ -18,7 +18,6 @@ const register = async (req, res) => {
 
   try {
     // hash password
-
     const hashedPassword = bcrypt.hashSync(password, salt);
 
     const emailExists = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
@@ -28,7 +27,7 @@ const register = async (req, res) => {
 
     // save user to database
     const result = await pool.query(
-      "INSERT INTO users (email, password, role_id, name, vorname) VALUES ($1, $2, (SELECT id FROM roles WHERE name = $3), $4, $5)",
+      "INSERT INTO users (email, password, role_id, name, vorname) VALUES ($1, $2, $3, $4, $5)",
       [email, hashedPassword, role, name, vorname]
     );
 
