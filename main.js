@@ -6,7 +6,6 @@ const db = require('./db');
 const app = express();
 const port = 8080;
 const controller = require('./controllers/controller');
-const { authorize } = require('./controllers/authorization-controller');
 const authorization = require('./authorization');
 const resetPasswordController = require('./resetPasswordController')
 const sendPasswordResetEmail = require('./sendPasswordResetEmail');
