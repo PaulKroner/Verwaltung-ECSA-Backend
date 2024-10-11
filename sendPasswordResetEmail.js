@@ -7,6 +7,7 @@
 
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
+const { sendEmail } = require('./mailer/mailer');
 const pool = require('./db'); // Verbindung zur Datenbank
 
 const sendPasswordResetEmail = async (req, res) => {
@@ -33,39 +34,14 @@ const sendPasswordResetEmail = async (req, res) => {
       [token, expiryDate, email]
     );
 
+    const resetLink = `http://localhost:3000/registration/resetPassword/${token}`;
+    const htmlContent = `
+      <p>Klicke auf den folgenden Link, um dein Passwort zurückzusetzen:</p>
+      <a href="${resetLink}">${resetLink}</a>
+    `;
+
     // send email
-    // const transporter = nodemailer.createTransport({
-    //   service: 'gmail',
-    //   auth: {
-    //     user: 'your-email@gmail.com',
-    //     pass: 'your-app-password',
-    //   },
-    // });
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.ethereal.email',
-      port: 587,
-      auth: {
-        user: 'gilberto.lindgren70@ethereal.email',
-        pass: 'KSZ2TqeZfKMqPuFCUp'
-      }
-    });
-
-    const resetLink = `http://localhost:3000/pages/registration/resetPassword/${token}`;
-
-
-    const mailOptions = {
-      from: 'gilberto.lindgren70@ethereal.email', // Ändere dies auf deine Ethereal-E-Mail
-      to: email,
-      subject: 'Passwort zurücksetzen',
-      html: `<p>Klicke auf den folgenden Link, um dein Passwort zurückzusetzen:</p>
-             <a href="${resetLink}">${resetLink}</a>`,
-    };
-
-    transporter.sendMail(mailOptions).then(info => {
-      console.log('Preview URL: ' + nodemailer.getTestMessageUrl(info));
-    });
-
-    // await transporter.sendMail(mailOptions);
+    await sendEmail(email, 'Passwort zurücksetzen', htmlContent);
 
     res.json({ message: 'E-Mail zum Zurücksetzen des Passworts wurde gesendet.' });
   } catch (error) {
