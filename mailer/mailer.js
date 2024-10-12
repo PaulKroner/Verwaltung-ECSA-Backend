@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-const sendEmail = (to, subject, htmlContent) => {
+const sendEmail = async (to, subject, htmlContent) => {
   const mailOptions = {
     from: 'gilberto.lindgren70@ethereal.email',
     to,
@@ -19,7 +19,7 @@ const sendEmail = (to, subject, htmlContent) => {
   };
 
   return transporter.sendMail(mailOptions).then(info => {
-    console.log('Preview URL: ' + nodemailer.getTestMessageUrl(info));
+    console.log('Preview URL: ' + nodemailer.getTestMessageUrl(info)); //for testing Email
   });
 };
 
