@@ -10,8 +10,13 @@ const expiryMail = async () => {
     res.rows.forEach(async (row) => {
       try {
         const email = row.email;
-        const message = `Your nachweis with ID ${row.id} has expired. Please take the necessary actions.`;
-        await sendEmail(email, 'Nachweis Expiration Notice', message);
+        const message = `
+          <h1>Führungszeugnis abgelaufen</h1>
+          <p>Hallo --Name hier einfügen--,</p>
+          <div>Ihr Führugszeugnis ist abgelaufen. Im Anhang finden Sie die PDF.</div>
+          <div>Schicken Sie die ausgefüllte PDF an --EMAIL einfügen--</div>
+        `;
+        await sendEmail(email, 'Führungszeugnis abgelaufen', message);
       } catch (error) {
         console.error(`Failed to send email to ${row.email}:`, error);
       }
