@@ -11,6 +11,7 @@ const authorization = require('./authorization');
 const resetPasswordController = require('./resetPasswordController')
 const sendPasswordResetEmail = require('./sendPasswordResetEmail');
 const expiryMail = require('./expiryMail');
+const sendEmailRequestFZ = require('./sendEmailRequestFZ');
 
 app.use(cors());
 app.use(express.json());
@@ -71,6 +72,8 @@ app.get('/test-expiry-mail', async (req, res) => {
   }
 });
 
+// send Email if Führungszeugnis is not entered in AddNewEmployee
+app.post('/api/sendEmailRequestFZ', sendEmailRequestFZ);
 
 
 // express seems like to have a problem with the lines below
