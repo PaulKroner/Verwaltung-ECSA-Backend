@@ -6,7 +6,6 @@
  */
 
 const crypto = require('crypto');
-const nodemailer = require('nodemailer');
 const { sendEmail } = require('./mailer/mailer');
 const pool = require('./db'); // Verbindung zur Datenbank
 
@@ -35,13 +34,13 @@ const sendPasswordResetEmail = async (req, res) => {
     );
 
     const resetLink = `http://localhost:3000/registration/resetPassword/${token}`;
-    const htmlContent = `
+    const message = `
       <p>Klicke auf den folgenden Link, um dein Passwort zurückzusetzen:</p>
       <a href="${resetLink}">${resetLink}</a>
     `;
 
     // send email
-    await sendEmail(email, 'Passwort zurücksetzen', htmlContent);
+    await sendEmail(email, 'Passwort zurücksetzen', message);
 
     res.json({ message: 'E-Mail zum Zurücksetzen des Passworts wurde gesendet.' });
   } catch (error) {
