@@ -13,7 +13,7 @@ const expiryMail = async () => {
         const message = `
           <h1>Führungszeugnis abgelaufen</h1>
           <p>Hallo --Name hier einfügen--,</p>
-          <div>Ihr Führugszeugnis ist abgelaufen. Im Anhang finden Sie die PDF.</div>
+          <div>Ihr Führungszeugnis ist abgelaufen. Im Anhang finden Sie die PDF.</div>
           <div>Schicken Sie die ausgefüllte PDF an --EMAIL einfügen--</div>
         `;
         await sendEmail(email, 'Führungszeugnis abgelaufen', message);
