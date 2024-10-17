@@ -22,7 +22,7 @@ const register = async (req, res) => {
 
     const emailExists = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
     if (emailExists.rowCount > 0) {
-      return res.status(400).json({ message: 'E-Mail-Adresse bereits vorhanden' });
+      return res.status(400).json({ message: 'E-Mail-Adresse ist bereits vorhanden' });
     }
 
     // save user to database
