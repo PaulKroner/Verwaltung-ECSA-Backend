@@ -31,8 +31,7 @@ const register = async (req, res) => {
       [email, hashedPassword, role, name, vorname]
     );
 
-    console.log("Database insert result:", result); // Add this to log the result of the query
-
+    // console.log("Database insert result:", result); // Add this to log the result of the query
 
     res.status(201).json({ message: 'Benutzer erfolgreich registriert' });
   } catch (error) {
