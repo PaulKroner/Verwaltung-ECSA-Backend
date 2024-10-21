@@ -6,7 +6,7 @@
  */
 
 const queries = require('../queries/queries');
-const { getDatafromDBQuery, insertNewEmployeeQuery, updateEmployeeQuery, deleteEmployeeQuery, getDataRolesQuery, deleteUserQuery, updateUserQuery, resetPasswordQuery} = require('../queries/queries');
+const { getDatafromDBQuery, insertNewEmployeeQuery, updateEmployeeQuery, deleteEmployeeQuery, getDataRolesQuery, deleteUserQuery, updateUserQuery} = require('../queries/queries');
 
 
 // get * from database
