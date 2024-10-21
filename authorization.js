@@ -59,7 +59,7 @@ const login = async (req, res) => {
     const token = jwt.sign(
       { id: user.id, role_id: user.role_id }, // Payload, which can include user info like id and role
       process.env.JWT_SECRET,           // Secret key from environment variables
-      { expiresIn: '1h' }               // Token expiration time
+      { expiresIn: "2d"}               // Token expiration time
     );
 
     // Erfolgreicher Login - Sende Token zurück
