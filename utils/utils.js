@@ -2,6 +2,9 @@
  * This file contains helper functions.
  */
 
+const pool = require('../db');
+const { tableName } = require('../queries/queries');
+
 // helper function to check if 
 // data.name, data.vorname and data.'_kontrolliert' contains only letters
 const isAlpha = (str) => /^[\p{L}\s-]+$/u.test(str);
@@ -24,6 +27,17 @@ const validateEmployeeData = (data) => {
   }
 };
 
+// Function to check database connectivity
+const checkDatabaseConnection = async () => {
+  try {
+    await pool.query('SELECT 1');
+  } catch (err) {
+    throw new Error('Die Datenbank ist nicht erreichbar.');
+  }
+};
+
+
 module.exports = {
   validateEmployeeData,
+  checkDatabaseConnection,
 };

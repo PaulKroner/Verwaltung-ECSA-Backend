@@ -12,6 +12,7 @@ const pool = require('./db'); // Verbindung zur Datenbank
 const sendPasswordResetEmail = async (req, res) => {
   const { email } = req.body;
   try {
+    await checkDatabaseConnection();
     const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
 
     // generate reset-token

@@ -9,6 +9,7 @@ const salt = process.env.BCRYPT_SALT;
 const { validationResult } = require('express-validator');
 const pool = require('./db'); // PostgreSQL connection pool
 const jwt = require('jsonwebtoken'); //web token
+const { checkDatabaseConnection } = require('./utils/utils');
 
 // Benutzer-Registrierung
 const register = async (req, res) => {
@@ -17,6 +18,7 @@ const register = async (req, res) => {
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
   try {
+    await checkDatabaseConnection();
     // hash password
     const hashedPassword = bcrypt.hashSync(password, salt);
 
@@ -46,6 +48,7 @@ const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
+    await checkDatabaseConnection();
     const userResult = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
     const user = userResult.rows[0];
 
@@ -68,8 +71,7 @@ const login = async (req, res) => {
       token,  // Send the generated token to the client
     });
   } catch (error) {
-    console.error("Login error:", error);
-    res.status(500).json({ message: 'Fehler beim Login', error: error.message });
+    res.status(500).json({ message: 'Fehler beim Login'})
   }
 
 };

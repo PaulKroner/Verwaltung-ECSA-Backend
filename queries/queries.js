@@ -4,11 +4,13 @@
  */
 const pool = require('../db');
 const tableName = 'employees_new';
-const { validateEmployeeData } = require('../utils/utils');
+exports.tableName = tableName;
+const { validateEmployeeData, checkDatabaseConnection } = require('../utils/utils');
 
 // get * query for the overview-table
 const getDatafromDBQuery = async () => {
   try {
+    await checkDatabaseConnection();
     const result = await pool.query(`SELECT * FROM ${tableName} ORDER BY name;`);
     return result.rows;
   } catch (err) {
@@ -19,7 +21,7 @@ const getDatafromDBQuery = async () => {
 // insert new employee
 const insertNewEmployeeQuery = async (data) => {
   try {
-
+    await checkDatabaseConnection();
     validateEmployeeData(data);
     // Extract keys and values from the data object
     const keys = Object.keys(data);
@@ -50,6 +52,7 @@ const insertNewEmployeeQuery = async (data) => {
 // update an employee
 const updateEmployeeQuery = async (data) => {
   try {
+    await checkDatabaseConnection();
     validateEmployeeData(data);
     const query = `
             UPDATE ${tableName}
@@ -83,6 +86,7 @@ const updateEmployeeQuery = async (data) => {
 // delete an employee
 const deleteEmployeeQuery = async (id) => {
   try {
+    await checkDatabaseConnection();
     const query = `DELETE FROM ${tableName} WHERE id = $1 RETURNING *`;
     const result = await pool.query(query, [id]);
     return result.rows[0];
@@ -93,16 +97,18 @@ const deleteEmployeeQuery = async (id) => {
 
 const getDataRolesQuery = async () => {
   try {
+    await checkDatabaseConnection();
     const result = await pool.query("SELECT id, email, name, vorname, role_id AS role FROM users");
     return result.rows;
   } catch (error) {
-    console.error(error.message);
+    throw new Error(`Fehler beim Löschen eines Users: ${error.message}`);
   }
 }
 
 // delete a user query
 const deleteUserQuery = async (id) => {
   try {
+    await checkDatabaseConnection();
     const query = `DELETE FROM users WHERE id = $1 RETURNING *`;
     const result = await pool.query(query, [id]);
     return result.rows[0];
@@ -113,6 +119,7 @@ const deleteUserQuery = async (id) => {
 
 const updateUserQuery = async (data) => {
   try {
+    await checkDatabaseConnection();
     const query = `
             UPDATE users
             SET email = $2, role_id = $3, name = $4, vorname = $5
