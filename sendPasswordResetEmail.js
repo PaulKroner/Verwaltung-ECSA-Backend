@@ -8,6 +8,7 @@
 const crypto = require('crypto');
 const { sendEmail } = require('./mailer/mailer');
 const pool = require('./db'); // Verbindung zur Datenbank
+const { checkDatabaseConnection } = require('./utils/utils');
 
 const sendPasswordResetEmail = async (req, res) => {
   const { email } = req.body;
