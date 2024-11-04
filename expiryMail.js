@@ -1,7 +1,6 @@
 const { sendEmail } = require('./mailer/mailer');
 const pool = require('./db');
 const { checkDatabaseConnection } = require('./utils/utils');
-const pool = require('./db');
 
 const expiryMailFZ = async () => {
   const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
