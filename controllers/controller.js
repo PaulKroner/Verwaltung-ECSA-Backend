@@ -26,6 +26,7 @@ const createEmployee = async (req, res) => {
         const result = await insertNewEmployeeQuery(data);
         res.status(201).json("Mitarbeiter wurde hinzugefügt");
     } catch (error) {
+      console.log(error);
         res.status(500).json({ error: error.message });
     }
 };

@@ -21,7 +21,7 @@ cron.schedule('0 0 1 */2 *', async () => {
   if (csvData) {
     try {
       const email = "test@mail.de"; //placeholder email
-      await sendEmail(email, 'Database Backup', 'Your database backup is attached.', csvData, 'database_backup.csv');
+      await sendEmail(email, 'Database Backup', 'Ihr Datenbank Backup ist im Anhang', csvData, 'database_backup.csv');
       console.log('Backup email sent');
     } catch (error) {
       console.error('Error sending backup email:', error);

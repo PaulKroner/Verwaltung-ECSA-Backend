@@ -8,6 +8,7 @@ const { tableName } = require('../queries/queries');
 // helper function to check if 
 // data.name, data.vorname and data.'_kontrolliert' contains only letters
 const isAlpha = (str) => /^[\p{L}\s-]+$/u.test(str);
+
 const validateEmployeeData = (data) => {
   // Check if 'name' and 'vorname' only contain letters
   if (!isAlpha(data.name)) {
@@ -19,7 +20,7 @@ const validateEmployeeData = (data) => {
 
   // Check if any key containing '_kontrolliert' only contains letters
   for (const [key, value] of Object.entries(data)) {
-    if (key.includes('_kontrolliert')) {
+    if (key.includes('_kontrolliert') && key !== 'fz_kontrolliert_am') {
       if (!isAlpha(value) && value !=='') {
         throw new Error(`${key} darf nur Buchstaben enthalten`);
       }
