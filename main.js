@@ -50,7 +50,8 @@ app.post('/api/sendResetPasswordEmail', sendPasswordResetEmail.sendPasswordReset
 // expiry mail
 const triggerExpiryMail = async () => {
   try {
-    await expiryMail(); // Call the expiryMail function
+    await expiryMailexpiryMailFZ();
+    await expiryMailexpiryMailUS();
     console.log('Expiry mail check completed!');
   } catch (error) {
     console.error('Error occurred while checking expiry mail:', error);
