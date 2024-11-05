@@ -56,7 +56,7 @@ const updateEmployeeQuery = async (data) => {
     validateEmployeeData(data);
     const query = `
             UPDATE ${tableName}
-            SET name = $2, vorname = $3, email = $4, postadresse = $5, fz_eingetragen = $6, fz_abgelaufen = $7, fz_kontrolliert = $8, fz_kontrolliert_am = $9, gs_eingetragen = $10, gs_erneuert = $11, gs_kontrolliert = $12, us_eingetragen = $13, us_abgelaufen = $14, us_kontrolliert = $15, sve_eingetragen = $16, sve_kontrolliert = $17
+            SET name = $2, vorname = $3, email = $4, postadresse = $5, fz_eingetragen = $6, fz_abgelaufen = $7, fz_kontrolliert = $8, fz_kontrolliert_am = $9, gs_eingetragen = $10, gs_erneuert = $11, gs_kontrolliert = $12, us_eingetragen = $13, us_abgelaufen = $14, us_kontrolliert = $15, sve_eingetragen = $16, sve_kontrolliert = $17, hauptamt = $18
             WHERE id = $1
             RETURNING *`;
     const result = await pool.query(query, [
@@ -77,6 +77,7 @@ const updateEmployeeQuery = async (data) => {
       data.us_kontrolliert || null,
       data.sve_eingetragen || null,
       data.sve_kontrolliert || null,
+      data.hauptamt || false,
     ]);
     return result.rows[0];
   } catch (err) {
