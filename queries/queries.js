@@ -2,8 +2,9 @@
  * This file contains all the queries that will be used to interact with the database.
  * The queries are exported and used in the controller functions.
  */
+require('dotenv').config();
 const pool = require('../db');
-const tableName = 'employees_new';
+const tableName = process.env.DB_TABLE_NAME
 exports.tableName = tableName;
 const { validateEmployeeData, checkDatabaseConnection } = require('../utils/utils');
 

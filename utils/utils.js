@@ -3,7 +3,6 @@
  */
 
 const pool = require('../db');
-const { tableName } = require('../queries/queries');
 
 // helper function to check if 
 // data.name, data.vorname and data.'_kontrolliert' contains only letters
