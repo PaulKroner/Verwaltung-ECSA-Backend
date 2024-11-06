@@ -129,12 +129,6 @@ const updateUserQuery = async (data) => {
             WHERE id = $1
             RETURNING *`;
 
-    console.log(data.id,
-      data.email || null,
-      data.role || null,
-      data.name || null,
-      data.vorname || null,)
-
     const result = await pool.query(query, [
       data.id,
       data.email || null,
