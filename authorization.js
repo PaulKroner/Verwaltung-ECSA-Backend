@@ -7,7 +7,7 @@ const bcrypt = require('bcryptjs');
 require('dotenv').config(); // Load .env file
 const salt = process.env.BCRYPT_SALT;
 const { validationResult } = require('express-validator');
-const pool = require('./db'); // PostgreSQL connection pool
+const pool = require('./db'); // MySQL connection pool
 const jwt = require('jsonwebtoken'); //web token
 const { checkDatabaseConnection } = require('./utils/utils');
 
@@ -46,9 +46,10 @@ const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    await checkDatabaseConnection();
-    const userResult = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
-    const user = userResult.rows[0];
+    // await checkDatabaseConnection();
+    const [userResult] = await pool.query("SELECT * FROM users WHERE email = ?", [email]);
+
+    const user = userResult;
 
     if (!user) return res.status(400).json({ message: 'E-Mail oder Passwort falsch!' });
 
@@ -58,21 +59,21 @@ const login = async (req, res) => {
 
     // Generating a JWT token
     const token = jwt.sign(
-      { id: user.id, role_id: user.role_id }, // Payload, which can include user info like id and role
-      process.env.JWT_SECRET,           // Secret key from environment variables
-      { expiresIn: "2d"}               // Token expiration time
+      { id: user.id, role_id: user.role_id }, // Payload
+      process.env.JWT_SECRET,                 // Secret key
+      { expiresIn: "2d" }                     // Token expiration time
     );
 
-    // Erfolgreicher Login - Sende Token zurück
+    // Successful login - Send token back
     res.json({
       message: 'Login erfolgreich',
-      token,  // Send the generated token to the client
+      token,
     });
   } catch (error) {
-    res.status(500).json({ message: 'Fehler beim Login'})
+    res.status(500).json({ message: 'Fehler beim Login' });
   }
-
 };
+
 
 
 module.exports = {
