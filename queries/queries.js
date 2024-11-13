@@ -125,7 +125,7 @@ const getDataRolesQuery = async () => {
   try {
     // await checkDatabaseConnection();
     const result = await pool.query("SELECT id, email, name, vorname, role_id AS role FROM users");
-    return result.rows;
+    return result;
   } catch (error) {
     throw new Error(`Fehler beim Löschen eines Users: ${error.message}`);
   }
@@ -135,9 +135,9 @@ const getDataRolesQuery = async () => {
 const deleteUserQuery = async (id) => {
   try {
     // await checkDatabaseConnection();
-    const query = `DELETE FROM users WHERE id = $1 RETURNING *`;
-    const result = await pool.query(query, [id]);
-    return result.rows[0];
+
+    const result = await pool.query(`DELETE FROM users WHERE id = ?`, [id]);
+    return result[0];
   } catch (err) {
     throw new Error(`Fehler beim Löschen eines Users: ${err.message}`);
   }
@@ -147,19 +147,19 @@ const updateUserQuery = async (data) => {
   try {
     // await checkDatabaseConnection();
     const query = `
-            UPDATE users
-            SET email = $2, role_id = $3, name = $4, vorname = $5
-            WHERE id = $1
-            RETURNING *`;
+      UPDATE users
+      SET email = ?, role_id = ?, name = ?, vorname = ?
+      WHERE id = ?
+    `;
 
     const result = await pool.query(query, [
-      data.id,
       data.email || null,
       data.role || null,
       data.name || null,
       data.vorname || null,
+      data.id,
     ]);
-    return result.rows[0];
+    return result;
   } catch (err) {
     throw new Error(`Fehler beim Updaten eines Users: ${err.message}`);
   }
