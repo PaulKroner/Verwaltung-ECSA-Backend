@@ -13,8 +13,8 @@ const { checkDatabaseConnection } = require('./utils/utils');
 const sendPasswordResetEmail = async (req, res) => {
   const { email } = req.body;
   try {
-    await checkDatabaseConnection();
-    const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    // await checkDatabaseConnection();
+    const result = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
 
     // generate reset-token
     const token = crypto.randomBytes(32).toString('hex');
@@ -22,14 +22,14 @@ const sendPasswordResetEmail = async (req, res) => {
     // set expiry date to 15 minutes from now
     const expiryDate = new Date(Date.now() + 900000); // 15 min in milliseconds
 
-    if (result.rows.length > 0) {
-      const user = result.rows[0];
+    if (result.length > 0) {
+      const user = result[0];
 
       // save token and expiry date to database if user exists
       await pool.query(
-        `UPDATE users SET reset_token = $1, reset_token_expiry = $2 WHERE email = $3`,
+        `UPDATE users SET reset_token = ?, reset_token_expiry = ? WHERE email = ?`,
         [token, expiryDate, email]
-      );
+      );      
 
       const resetLink = `http://localhost:3000/registration/resetPassword/${token}`;
       const message = `

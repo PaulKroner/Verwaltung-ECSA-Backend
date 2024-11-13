@@ -13,15 +13,15 @@ const resetPassword = async (req, res) => {
 
   // Suche den User mit dem Token und überprüfe, ob der Token gültig ist
   const result = await pool.query(
-    `SELECT * FROM users WHERE reset_token = $1 AND reset_token_expiry > NOW()`,
+    `SELECT * FROM users WHERE reset_token = ? AND reset_token_expiry > NOW()`,
     [token]
   );
 
-  if (result.rows.length === 0) {
+  if (result.length === 0) {
     return res.status(400).send('Token ist ungültig oder abgelaufen.');
   }
 
-  const user = result.rows[0];
+  const user = result[0];
 
   // hash password
   // const salt = await bcrypt.genSalt();
@@ -29,7 +29,7 @@ const resetPassword = async (req, res) => {
 
   // Aktualisiere das Passwort in der Datenbank
   await pool.query(
-    `UPDATE users SET password = $1, reset_token = NULL, reset_token_expiry = NULL WHERE email = $2`,
+    `UPDATE users SET password = ?, reset_token = NULL, reset_token_expiry = NULL WHERE email = ?`,
     [hashedPassword, user.email]
   );
 
