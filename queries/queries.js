@@ -4,16 +4,16 @@
  */
 require('dotenv').config();
 const pool = require('../db');
-const tableName = process.env.DB_TABLE_NAME
-exports.tableName = tableName;
+const tableNameEmployees = process.env.DB_EMPLOYEES
+// exports.tableName = tableName;
 const { validateEmployeeData, checkDatabaseConnection } = require('../utils/utils');
 
 // get * query for the overview-table
 const getDatafromDBQuery = async () => {
   try {
-    await checkDatabaseConnection();
-    const result = await pool.query(`SELECT * FROM ${tableName} ORDER BY name;`);
-    return result.rows;
+    // await checkDatabaseConnection();
+    const rows = await pool.query(`SELECT * FROM ?? ORDER BY name`, [tableNameEmployees]);
+    return rows;
   } catch (err) {
     throw new Error(`Fehler beim Abfragen der Datenbank: ${err.message}`);
   }
@@ -22,7 +22,7 @@ const getDatafromDBQuery = async () => {
 // insert new employee
 const insertNewEmployeeQuery = async (data) => {
   try {
-    await checkDatabaseConnection();
+    // await checkDatabaseConnection();
     validateEmployeeData(data);
     // Extract keys and values from the data object
     const keys = Object.keys(data);
@@ -31,20 +31,17 @@ const insertNewEmployeeQuery = async (data) => {
     // Build the columns part of the query
     const columns = keys.join(', ');
 
-    // Create placeholders for values in the SQL query
-    const placeholders = keys.map((_, index) => `$${index + 1}`).join(', ');
+    const placeholders = keys.map(() => '?').join(', ');
 
-    // Construct the SQL query
     const query = `
-          INSERT INTO ${tableName} (${columns})
+          INSERT INTO ${tableNameEmployees} (${columns})
           VALUES (${placeholders})
-          RETURNING *;
       `;
 
-    // Execute the query
     const result = await pool.query(query, values);
+    const [insertedEmployee] = await pool.query(`SELECT * FROM ${tableNameEmployees} WHERE id = ?`, [result.insertId]);
 
-    return result.rows[0];
+    return insertedEmployee[0];
   } catch (err) {
     throw new Error(`Fehler beim Hinzufügen eines neuen Mitarbeiters: ${err.message}`);
   }
@@ -53,15 +50,35 @@ const insertNewEmployeeQuery = async (data) => {
 // update an employee
 const updateEmployeeQuery = async (data) => {
   try {
-    await checkDatabaseConnection();
+    // Validate the data and ensure dates are in the correct format (e.g., 'YYYY-MM-DD')
     validateEmployeeData(data);
+
+    console.log(data)
+
     const query = `
-            UPDATE ${tableName}
-            SET name = $2, vorname = $3, email = $4, postadresse = $5, fz_eingetragen = $6, fz_abgelaufen = $7, fz_kontrolliert = $8, fz_kontrolliert_am = $9, gs_eingetragen = $10, gs_erneuert = $11, gs_kontrolliert = $12, us_eingetragen = $13, us_abgelaufen = $14, us_kontrolliert = $15, sve_eingetragen = $16, sve_kontrolliert = $17, hauptamt = $18
-            WHERE id = $1
-            RETURNING *`;
+      UPDATE ${tableNameEmployees}
+      SET 
+        name = ?, 
+        vorname = ?, 
+        email = ?, 
+        postadresse = ?, 
+        fz_eingetragen = ?, 
+        fz_abgelaufen = ?, 
+        fz_kontrolliert = ?, 
+        fz_kontrolliert_am = ?, 
+        gs_eingetragen = ?, 
+        gs_erneuert = ?, 
+        gs_kontrolliert = ?, 
+        us_eingetragen = ?, 
+        us_abgelaufen = ?, 
+        us_kontrolliert = ?, 
+        sve_eingetragen = ?, 
+        sve_kontrolliert = ?, 
+        hauptamt = ?
+      WHERE id = ?
+    `;
+
     const result = await pool.query(query, [
-      data.id,
       data.name || null,
       data.vorname || null,
       data.email || null,
@@ -79,8 +96,12 @@ const updateEmployeeQuery = async (data) => {
       data.sve_eingetragen || null,
       data.sve_kontrolliert || null,
       data.hauptamt || false,
+      data.id
     ]);
-    return result.rows[0];
+
+    console.log("result: ", result)
+
+    return result;
   } catch (err) {
     console.log(err);
     throw new Error(`Fehler beim Updaten eines Mitarbeiters: ${err.message}`);
@@ -90,10 +111,11 @@ const updateEmployeeQuery = async (data) => {
 // delete an employee
 const deleteEmployeeQuery = async (id) => {
   try {
-    await checkDatabaseConnection();
-    const query = `DELETE FROM ${tableName} WHERE id = $1 RETURNING *`;
-    const result = await pool.query(query, [id]);
-    return result.rows[0];
+    // await checkDatabaseConnection();
+
+    const result = await pool.query(`DELETE FROM ${tableNameEmployees} WHERE id = ?`, [id]);
+
+    return result[0];
   } catch (err) {
     throw new Error(`Fehler beim Löschen eines Mitarbeiters: ${err.message}`);
   }
@@ -101,7 +123,7 @@ const deleteEmployeeQuery = async (id) => {
 
 const getDataRolesQuery = async () => {
   try {
-    await checkDatabaseConnection();
+    // await checkDatabaseConnection();
     const result = await pool.query("SELECT id, email, name, vorname, role_id AS role FROM users");
     return result.rows;
   } catch (error) {
@@ -112,7 +134,7 @@ const getDataRolesQuery = async () => {
 // delete a user query
 const deleteUserQuery = async (id) => {
   try {
-    await checkDatabaseConnection();
+    // await checkDatabaseConnection();
     const query = `DELETE FROM users WHERE id = $1 RETURNING *`;
     const result = await pool.query(query, [id]);
     return result.rows[0];
@@ -123,7 +145,7 @@ const deleteUserQuery = async (id) => {
 
 const updateUserQuery = async (data) => {
   try {
-    await checkDatabaseConnection();
+    // await checkDatabaseConnection();
     const query = `
             UPDATE users
             SET email = $2, role_id = $3, name = $4, vorname = $5
