@@ -18,18 +18,18 @@ const register = async (req, res) => {
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
   try {
-    await checkDatabaseConnection();
+    // await checkDatabaseConnection();
     // hash password
     const hashedPassword = bcrypt.hashSync(password, salt);
 
-    const emailExists = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
+    const emailExists = await pool.query("SELECT * FROM users WHERE email = ?", [email]);
     if (emailExists.rowCount > 0) {
       return res.status(400).json({ message: 'E-Mail-Adresse ist bereits vorhanden' });
     }
 
     // save user to database
     const result = await pool.query(
-      "INSERT INTO users (email, password, role_id, name, vorname) VALUES ($1, $2, $3, $4, $5)",
+      "INSERT INTO users (email, password, role_id, name, vorname) VALUES (?, ?, ?, ?, ?)",
       [email, hashedPassword, role, name, vorname]
     );
 
