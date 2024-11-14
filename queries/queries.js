@@ -4,7 +4,7 @@
  */
 require('dotenv').config();
 const pool = require('../db');
-const tableName = process.env.DB_TABLE_NAME
+const tableName = process.env.DB_PG_TABLE_NAME
 exports.tableName = tableName;
 const { validateEmployeeData, checkDatabaseConnection } = require('../utils/utils');
 
