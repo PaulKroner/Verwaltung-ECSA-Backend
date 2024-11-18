@@ -11,16 +11,10 @@ const sendEmailRequestFZ = async (req, res) => {
     <div>Schicken Sie ihr Führungszeugnis bitte an diese E-Mail-Adresse: -EMAIL einfügen--</div>
   `;
 
-        // Read the PDF file as a buffer
-        const pdfPath = path.join(__dirname, '/assets/Aufforderung Polizeiliches Führungszeugnis 2023.pdf');
-        const pdfBuffer = fs.readFileSync(pdfPath);
+  // Read the PDF file as a buffer
+  const pdfPath = path.join(__dirname, '/assets/Aufforderung Polizeiliches Führungszeugnis 2023.pdf');
+  const pdfBuffer = fs.readFileSync(pdfPath);
 
-        console.log("test2")
-
-      console.log(pdfPath);
-      console.log(pdfBuffer);
-
-      console.log("test2")
   try {
     await sendEmail(email, 'Führungszeugnis übermitteln', message, pdfBuffer, 'Aufforderung Polizeiliches Führungszeugnis.pdf');
     // Send success response
@@ -32,4 +26,4 @@ const sendEmailRequestFZ = async (req, res) => {
   }
 };
 
-module.exports = sendEmailRequestFZ ;
+module.exports = sendEmailRequestFZ;
