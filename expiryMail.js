@@ -7,7 +7,7 @@ const expiryMailFZ = async () => {
   const query = `SELECT * FROM employees_new WHERE fz_abgelaufen < $1`;
 
   try {
-    await checkDatabaseConnection();
+    // await checkDatabaseConnection();
     const res = await pool.query(query, [today]);
     res.rows.forEach(async (row) => {
       try {
