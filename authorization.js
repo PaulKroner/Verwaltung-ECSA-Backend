@@ -5,35 +5,48 @@
 
 const bcrypt = require('bcryptjs');
 require('dotenv').config(); // Load .env file
-const salt = process.env.BCRYPT_SALT;
 const { validationResult } = require('express-validator');
-const pool = require('./db'); // MySQL connection pool
 const jwt = require('jsonwebtoken'); //web token
-const { checkDatabaseConnection } = require('./utils/utils');
+
+const { PrismaClient } = require('@prisma/client')
+const prisma = new PrismaClient()
 
 // Benutzer-Registrierung
 const register = async (req, res) => {
   const { email, password, role, name, vorname } = req.body;
   const errors = validationResult(req);
-  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+  const saltRounds = 10;
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
 
   try {
-    // await checkDatabaseConnection();
-    // hash password
-    const hashedPassword = bcrypt.hashSync(password, salt);
+    // Check if email already exists
+    const emailExists = await prisma.users.findUnique({
+      where: { email },
+    });    
 
-    const emailExists = await pool.query("SELECT * FROM users WHERE email = ?", [email]);
-    if (emailExists.rowCount > 0) {
+    if (emailExists) {
       return res.status(400).json({ message: 'E-Mail-Adresse ist bereits vorhanden' });
     }
 
-    // save user to database
-    const result = await pool.query(
-      "INSERT INTO users (email, password, role_id, name, vorname) VALUES (?, ?, ?, ?, ?)",
-      [email, hashedPassword, role, name, vorname]
-    );
+    // Hash the password
+    const salt = process.env.BCRYPT_SALT; // Load salt from environment variable
+    const hashedPassword = bcrypt.hashSync(password, salt);
 
-    res.status(201).json({ message: 'Benutzer erfolgreich registriert' });
+    // Save user to the database
+    const newUser = await prisma.users.create({
+      data: {
+        email,
+        password: hashedPassword,
+        role_id: role, // Assuming `role` is correctly mapped to the `role_id` field
+        name,
+        vorname,
+      },
+    });
+
+    res.status(201).json({ message: 'Benutzer erfolgreich registriert', user: newUser });
   } catch (error) {
     console.error("Error during registration:", error); // Log the full error
     res.status(500).json({ message: 'Fehler beim Registrieren', error });
@@ -46,34 +59,39 @@ const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // await checkDatabaseConnection();
-    const [userResult] = await pool.query("SELECT * FROM users WHERE email = ?", [email]);
+    // Find user by email
+    const user = await prisma.users.findUnique({
+      where: { email },
+    });
 
-    const user = userResult;
+    // Check if user exists
+    if (!user) {
+      return res.status(400).json({ message: 'E-Mail oder Passwort falsch!' });
+    }
 
-    if (!user) return res.status(400).json({ message: 'E-Mail oder Passwort falsch!' });
-
-    // compare password
+    // Compare passwords
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: 'E-Mail oder Passwort falsch!' });
+    if (!isMatch) {
+      return res.status(400).json({ message: 'E-Mail oder Passwort falsch!' });
+    }
 
-    // Generating a JWT token
+    // Generate JWT token
     const token = jwt.sign(
       { id: user.id, role_id: user.role_id }, // Payload
-      process.env.JWT_SECRET,                 // Secret key
-      { expiresIn: "2d" }                     // Token expiration time
+      process.env.JWT_SECRET,                // Secret key
+      { expiresIn: "2d" }                    // Token expiration time
     );
 
-    // Successful login - Send token back
+    // Successful login
     res.json({
       message: 'Login erfolgreich',
       token,
     });
   } catch (error) {
-    res.status(500).json({ message: 'Fehler beim Login' });
+    console.error("Error during login:", error);
+    res.status(500).json({ message: 'Fehler beim Login', error });
   }
 };
-
 
 
 module.exports = {

@@ -7,45 +7,58 @@
 
 const crypto = require('crypto');
 const { sendEmail } = require('./mailer/mailer');
-const pool = require('./db'); // Verbindung zur Datenbank
-const { checkDatabaseConnection } = require('./utils/utils');
+const { PrismaClient } = require('@prisma/client')
+const prisma = new PrismaClient()
 
 const sendPasswordResetEmail = async (req, res) => {
   const { email } = req.body;
+
   try {
-    // await checkDatabaseConnection();
-    const result = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+    // Fetch the user by email
+    const user = await prisma.users.findUnique({
+      where: { email },
+    });
 
-    // generate reset-token
-    const token = crypto.randomBytes(32).toString('hex');
-
-    // set expiry date to 15 minutes from now
-    const expiryDate = new Date(Date.now() + 900000); // 15 min in milliseconds
-
-    if (result.length > 0) {
-      const user = result[0];
-
-      // save token and expiry date to database if user exists
-      await pool.query(
-        `UPDATE users SET reset_token = ?, reset_token_expiry = ? WHERE email = ?`,
-        [token, expiryDate, email]
-      );      
-
-      const resetLink = `http://localhost:3000/registration/resetPassword/${token}`;
-      const message = `
-        <p>Klicke auf den folgenden Link, um dein Passwort zurückzusetzen:</p>
-        <a href="${resetLink}">${resetLink}</a>
-      `;
-
-      // send email
-      await sendEmail(email, 'Passwort zurücksetzen', message);
+    // Always return the same response regardless of whether the user exists
+    if (!user) {
+      return res.json({
+        message: 'Wenn ein Konto mit dieser E-Mail-Adresse existiert, wurde eine E-Mail zum Zurücksetzen des Passworts gesendet.',
+      });
     }
 
-    // Gebe immer die gleiche Antwort zurück, unabhängig davon, ob die E-Mail existiert oder nicht
-    res.json({ message: 'Wenn ein Konto mit dieser E-Mail-Adresse existiert, wurde eine E-Mail zum Zurücksetzen des Passworts gesendet.' });
+    // Generate a reset token
+    const token = crypto.randomBytes(32).toString('hex');
+
+    // Set expiry date to 15 minutes from now
+    const expiryDate = new Date(Date.now() + 900000 + 3600000); // 15 minutes in milliseconds and 1 hour for the right timezone        
+
+    // Save the reset token and expiry date to the database
+    await prisma.users.update({
+      where: { email },
+      data: {
+        reset_token: token,
+        reset_token_expiry: expiryDate,
+      },
+    });
+
+    // Create reset link
+    const resetLink = `http://localhost:3000/registration/resetPassword/${token}`;
+    const message = `
+      <p>Klicke auf den folgenden Link, um dein Passwort zurückzusetzen:</p>
+      <a href="${resetLink}">${resetLink}</a>
+    `;
+
+    // Send the email
+    await sendEmail(email, 'Passwort zurücksetzen', message);
+
+    // Respond with a success message
+    res.json({
+      message: 'Wenn ein Konto mit dieser E-Mail-Adresse existiert, wurde eine E-Mail zum Zurücksetzen des Passworts gesendet.',
+    });
   } catch (error) {
+    // Log error and return a generic error response
+    console.error(error.message);
     res.status(500).json({ message: 'Ein Fehler ist aufgetreten.' });
-    console.log(error.message);
   }
 };
 

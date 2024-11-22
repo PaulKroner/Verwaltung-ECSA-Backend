@@ -16,15 +16,6 @@ const authorize = (roles) => {
   };
 };
 
-// Protect routes
-// app.get('/admin', authorize(['Admin']), (req, res) => {
-//   res.send('Welcome Admin');
-// });
-
-// app.get('/user', authorize(['User', 'Admin']), (req, res) => {
-//   res.send('Welcome User');
-// });
-
 module.exports = {
   authorize,
 };

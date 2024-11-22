@@ -1,2 +1,7 @@
 .env
 .DS_Store
+schema.prisma
+node_modules/.prisma/client/schema.prisma
+node_modules/.prisma/client/schema.prisma
+prisma/migrations/0_init/migration.sql
+prisma/migrations/20241122082814_add_unique_constraint_to_email/migration.sql

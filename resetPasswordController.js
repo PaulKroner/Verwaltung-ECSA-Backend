@@ -7,33 +7,53 @@ const pool = require('./db');
 const bcrypt = require('bcryptjs');
 require('dotenv').config(); // Load .env file
 const salt = process.env.BCRYPT_SALT;
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
 const resetPassword = async (req, res) => {
   const { token, newPassword } = req.body;
 
-  // Suche den User mit dem Token und überprüfe, ob der Token gültig ist
-  const result = await pool.query(
-    `SELECT * FROM users WHERE reset_token = ? AND reset_token_expiry > NOW()`,
-    [token]
-  );
+  try {
+    // Find the user with the reset token and ensure it hasn't expired
+    const user = await prisma.users.findFirst({
+      where: {
+        reset_token: token,
+      },
+      select: {
+        email: true,
+        reset_token_expiry: true,
+      },
+    });
 
-  if (result.length === 0) {
-    return res.status(400).send('Token ist ungültig oder abgelaufen.');
+    // Check if the user exists and the reset token has expired
+    if (!user || user.reset_token_expiry < new Date()) {
+      return res.status(400).send('Token ist ungültig oder abgelaufen.');
+    }
+
+    // Hash the new password
+    const hashedPassword = bcrypt.hashSync(newPassword, salt);
+
+    // Update the user's password and clear the reset token details
+    await prisma.users.update({
+      where: {
+        email: user.email,
+      },
+      data: {
+        password: hashedPassword,
+        reset_token: null,
+        reset_token_expiry: null,
+      },
+    });
+
+    res.send('Passwort erfolgreich zurückgesetzt.');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Etwas ist schief gelaufen.');
   }
+};
 
-  const user = result[0];
-
-  // hash password
-  // const salt = await bcrypt.genSalt();
-  const hashedPassword = bcrypt.hashSync(newPassword, salt);
-
-  // Aktualisiere das Passwort in der Datenbank
-  await pool.query(
-    `UPDATE users SET password = ?, reset_token = NULL, reset_token_expiry = NULL WHERE email = ?`,
-    [hashedPassword, user.email]
-  );
-
-  res.send('Passwort erfolgreich zurückgesetzt.');
+module.exports = {
+  resetPassword,
 };
 
 module.exports = {
