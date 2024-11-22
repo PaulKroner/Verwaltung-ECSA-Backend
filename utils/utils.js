@@ -27,20 +27,7 @@ const validateEmployeeData = (data) => {
   }
 };
 
-// Function to check database connectivity
-// BUG: This function is not working as expected
-const checkDatabaseConnection = async () => {
-  try {
-    const connection = await pool.getConnection();
-    await connection.query('SELECT 1');
-    connection.release();
-  } catch (err) {
-    throw new Error('Die Datenbank ist nicht erreichbar.');
-  }
-};
-
 
 module.exports = {
   validateEmployeeData,
-  checkDatabaseConnection,
 };
