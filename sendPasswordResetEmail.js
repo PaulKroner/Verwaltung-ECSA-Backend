@@ -14,6 +14,7 @@ const sendPasswordResetEmail = async (req, res) => {
   const { email } = req.body;
 
   try {
+    // does not make any sense
     // Fetch the user by email
     const user = await prisma.users.findUnique({
       where: { email },
